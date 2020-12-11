@@ -20,10 +20,22 @@ if choice == 'book':
         num_avail = soup.find_all('td')[5]
         descr = soup.find('article', {'class': 'product_page'}).find_all('p')[3]
         cat = soup.find('ul', {'class': 'breadcrumb'}).find_all('a')[2]
-        revw = soup.find_all('td')[6]
+        revws_str = soup.find('div', {'class': 'col-sm-6 product_main'}).find_all('p')[2]
+        # Create a list to convert revws_str (string) into reviews_int (int)
+        i = 0
+        convert_revws = [None, 'One', 'Two', 'Three', 'Four', 'Five']
+        # For each i (from 0 to 5), we check if revws_str == convert_revws[i]
+        # i allows to navigate through index and to know the value of convert_str        
+        for i in range (6):
+            if revws_str['class'][1] == convert_revws[i]:
+                revws_int = i
+                break
+            else:
+                i += 1
         img_url = soup.find('img')
 
-        with open('book\'s_information.csv', 'w') as p: # Open (or create if not exists) a csv file to write the data in
+        # Open (or create if not exists) a csv file to write the data in
+        with open('book\'s_information.csv', 'w') as p:
             # Declare the key name of the dictionnary    
             fnames = [
                 'product_page_url',
@@ -38,7 +50,6 @@ if choice == 'book':
                 'image_url'
                 ]
             csv_writer = csv.DictWriter(p, delimiter='|', fieldnames=fnames)    
-
             csv_writer.writeheader()
             csv_writer.writerow({
                 'product_page_url' : prdct_pg['href'].replace('..', 'http://books.toscrape.com'),
@@ -49,7 +60,8 @@ if choice == 'book':
                 'number_available' : num_avail.text.replace('In stock (', '').replace(' available)', ''),
                 'product_description' : descr.text,
                 'category' : cat.text,
-                'review_rating' : revw.text,
+                'review_rating' : revws_int,
                 'image_url' : img_url['src'].replace('../..', 'http://books.toscrape.com')
                 })
+
     print("File book's_information.csv  has been updated")
