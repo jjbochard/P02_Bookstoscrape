@@ -11,4 +11,3 @@ if choice == 'book':
         )
     function.write_csv('book\'s_information.csv', data)
     function.download_image(data)
-    
