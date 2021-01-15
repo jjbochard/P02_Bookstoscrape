@@ -85,3 +85,4 @@ def get_url_books_for_a_category_page(url):
                         a_book = book_url.find('a')
                         books_links.append(a_book['href'].replace('../../..', 'http://books.toscrape.com/catalogue'))
     return books_links
+  

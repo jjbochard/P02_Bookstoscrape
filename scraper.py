@@ -49,3 +49,4 @@ if choice == 'category':
             # response = requests.get("" + data['image_url']['src'].replace('../..', 'http://books.toscrape.com') + "")
             function.download_image(data)
     print("File book's_information_category.csv has been updated")
+
