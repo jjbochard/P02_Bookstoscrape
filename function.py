@@ -110,4 +110,3 @@ def print_time(raw_interval):
     extra_sec = round(interval_in_min % 1, 2)
     interval_in_sec = round(extra_sec * 60)
     print("The site has been scraped in " + str(round(interval_in_min)) + " minutes et " + str(interval_in_sec) + " seconds.")
-
