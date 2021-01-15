@@ -57,3 +57,32 @@ def download_image(file):
     with open(file['title'].text.replace('/', '') + ".jpg", "wb") as file:
         file.write(response.content)
         file.close()
+
+def get_url_books_for_a_category_page(url):
+    books_links = []
+    response = requests.get(url)
+    if response.ok:
+        soup = bs(response.text, "lxml")
+        category_pagination = soup.find('li', {'class': 'current'})
+        if category_pagination is None:
+            book_urls = soup.find_all('li', {'class':'col-xs-6 col-sm-4 col-md-3 col-lg-3'})
+            for book_url in book_urls:
+                a_book = book_url.find('a')
+                books_links.append(a_book['href'].replace('../../..', 'http://books.toscrape.com/catalogue'))
+        else:
+            num_pagination = int(category_pagination.text.strip().replace('Page 1 of ', ''))
+            category_urls = []
+            j = 1
+            for i in range(num_pagination):
+                category_urls.append(url.replace('index.html', 'page-') + str(j) + '.html')
+                j += 1
+            for category_url in category_urls:
+                response = requests.get(category_url)
+                if response.ok:
+                    soup = bs(response.text, "lxml")
+                    book_urls = soup.find_all('li', {'class':'col-xs-6 col-sm-4 col-md-3 col-lg-3'})
+                    for book_url in book_urls:
+                        a_book = book_url.find('a')
+                        books_links.append(a_book['href'].replace('../../..', 'http://books.toscrape.com/catalogue'))
+    return books_links
+  
