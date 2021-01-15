@@ -85,4 +85,28 @@ def get_url_books_for_a_category_page(url):
                         a_book = book_url.find('a')
                         books_links.append(a_book['href'].replace('../../..', 'http://books.toscrape.com/catalogue'))
     return books_links
-  
+
+def get_all_url_category():
+
+    category_links = []
+    url = 'http://books.toscrape.com/'
+    response = requests.get(url)
+    if response.ok:
+        soup = bs(response.text, "lxml")
+        category_urls = soup.find('ul', {'class': 'nav nav-list'}).find('li').find_all('li')
+        for category_url in category_urls:
+            a_category = category_url.find('a')
+            category_links.append('http://books.toscrape.com/' + a_category['href'])
+    return category_links
+
+def get_books_category_name(url_books_category):
+    books_category_name = url_books_category.replace('http://books.toscrape.com/catalogue/category/books/', '').replace('/index.html', '').split("_")
+    books_category_name = books_category_name[0].replace("-", " ").capitalize()
+    return books_category_name
+
+
+def print_time(raw_interval):
+    interval_in_min = raw_interval /60
+    extra_sec = round(interval_in_min % 1, 2)
+    interval_in_sec = round(extra_sec * 60)
+    print("The site has been scraped in " + str(round(interval_in_min)) + " minutes et " + str(interval_in_sec) + " seconds.")
