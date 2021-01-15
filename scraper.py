@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import csv
 import time
+import requests
+from bs4 import BeautifulSoup as bs
 import function
 
 choice = input("Scrape [book] [category] [all] page : ").lower()
-if choice == 'b':
+if choice == 'book':
 
     data = function.get_books_informations(
         'http://books.toscrape.com/catalogue/eat-fat-get-thin_688/index.html'
@@ -12,7 +14,7 @@ if choice == 'b':
     function.write_csv('book\'s_information.csv', data)
     function.download_image(data)
 
-if choice == 'c':
+if choice == 'category':
 
     books_links = function.get_url_books_for_a_category_page(
         'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
@@ -50,7 +52,7 @@ if choice == 'c':
             function.download_image(data)
     print("File book's_information_category.csv has been updated")
 
-if choice == 'a':
+if choice == 'all':
     start_time = time.time()
     k = 0
     category_links = function.get_all_url_category()
