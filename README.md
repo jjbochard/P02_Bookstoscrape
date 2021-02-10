@@ -55,7 +55,7 @@ Finally, install required modules
 
 To deactivate your venv :
 
-    deactivate    
+    deactivate
 
 ## How to use
 
