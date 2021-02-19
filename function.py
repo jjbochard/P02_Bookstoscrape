@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-def get_books_informations(url):
+def get_book_informations(url):
 
     data = {}
 
@@ -14,15 +14,21 @@ def get_books_informations(url):
         soup = bs(response.text, "lxml")
 
         data["product_page_url"] = url
-        data["universal_product_code"] = soup.find_all("td")[0]
-        data["title"] = soup.find("h1")
-        data["price_including_tax"] = soup.find_all("td")[3]
-        data["price_excluding_tax"] = soup.find_all("td")[2]
-        data["number_available"] = soup.find_all("td")[5]
-        data["product_description"] = soup.find(
-            "article", {"class": "product_page"}
-        ).find_all("p")[3]
-        data["category"] = soup.find("ul", {"class": "breadcrumb"}).find_all("a")[2]
+        data["universal_product_code"] = soup.find_all("td")[0].text
+        data["title"] = soup.find("h1").text
+        data["price_including_tax"] = soup.find_all("td")[3].text.replace("Â", "")
+        data["price_excluding_tax"] = soup.find_all("td")[2].text.replace("Â", "")
+        data["number_available"] = (
+            soup.find_all("td")[5]
+            .text.replace("In stock (", "")
+            .replace(" available)", "")
+        )
+        data["product_description"] = (
+            soup.find("article", {"class": "product_page"}).find_all("p")[3].text
+        )
+        data["category"] = (
+            soup.find("ul", {"class": "breadcrumb"}).find_all("a")[2].text
+        )
         data["review_rating"] = soup.find(
             "div", {"class": "col-sm-6 product_main"}
         ).find_all("p")[2]
@@ -34,49 +40,38 @@ def get_books_informations(url):
                 break
             else:
                 i += 1
-        data["image_url"] = soup.find("img")
+        data["image_url"] = soup.find("img")["src"].replace(
+            "../..", "http://books.toscrape.com"
+        )
     return data
 
 
-def write_csv(csv_name, file):
+def write_csv(book_list, csv_name):
     with open(csv_name, "w") as p:
-        fnames = []
-        for key in file.keys():
-            fnames.append(key)
+        fnames = [
+            "product_page_url",
+            "universal_product_code",
+            "title",
+            "price_including_tax",
+            "price_excluding_tax",
+            "number_available",
+            "product_description",
+            "category",
+            "review_rating",
+            "image_url",
+        ]
         csv_writer = csv.DictWriter(p, delimiter="|", fieldnames=fnames)
         csv_writer.writeheader()
-        csv_writer.writerow(
-            {
-                "product_page_url": file["product_page_url"],
-                "universal_product_code": file["universal_product_code"].text,
-                "title": file["title"].text,
-                "price_including_tax": file["price_including_tax"].text.replace(
-                    "Â", ""
-                ),
-                "price_excluding_tax": file["price_excluding_tax"].text.replace(
-                    "Â", ""
-                ),
-                "number_available": file["number_available"]
-                .text.replace("In stock (", "")
-                .replace(" available)", ""),
-                "product_description": file["product_description"].text,
-                "category": file["category"].text,
-                "review_rating": file["review_rating"],
-                "image_url": file["image_url"]["src"].replace(
-                    "../..", "http://books.toscrape.com"
-                ),
-            }
-        )
-    print("File " + csv_name + " has been updated")
+        if book_list:
+            for book in book_list:
+                csv_writer.writerow(book)
 
 
-def download_image(file):
-    response = requests.get(
-        "" + file["image_url"]["src"].replace("../..", "http://books.toscrape.com") + ""
-    )
-    with open(file["title"].text.replace("/", "") + ".jpg", "wb") as file:
-        file.write(response.content)
-        file.close()
+def download_image(book):
+    response = requests.get(book["image_url"])
+    with open(book["title"] + ".jpg", "wb") as book:
+        book.write(response.content)
+        book.close()
 
 
 def get_url_books_for_a_category_page(url):
