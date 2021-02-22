@@ -128,7 +128,7 @@ def get_url_books_for_a_category_page(url):
                 j += 1
 
         else:
-            category_urls.append(url)
+            print(category_urls)
 
         for category_url in category_urls:
             response = requests.get(category_url)
