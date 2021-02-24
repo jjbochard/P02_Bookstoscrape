@@ -37,7 +37,7 @@ First, install [Python 3.6+](https://www.python.org/downloads/).
 
 Then, create your virtual environnement :
 
-    python -m venv <your_venv_name>
+    python3 -m venv <your_venv_name>
 
 Activate it :
 
@@ -51,11 +51,21 @@ Activate it :
 
 Finally, install required modules
 
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
 
 To deactivate your venv :
 
     deactivate
+
+### Optionnal : configure your git repository with pre-commit (if you want to fork this project)
+
+You can install pre-commit with python
+
+    pip3 install pre-commit
+
+Then, you can install the configured pre commit hook with
+
+    pre-commit install
 
 ## How to use
 
@@ -65,12 +75,18 @@ Launch a shell and type :
 
 Now, you have three choices. You can :
 
-- scrape a book's page in order to get all the informations we wanted by typing **book**
-- scrape all books from a category in order to get all the informations we wanted for all the books of the category by typing **category**
-- scrape all the books of all the categories in order to get all the informations we wanted for all the books of the site by typing **all**
+- scrape a book's page in order to get all the informations of a book by typing **book**
+- scrape all books from a category in order to get all the informations of all the books of the category by typing **category**
+- scrape all the books of all the categories in order to get all the informations of all the books of the site by typing **all**
+
+If you scrape all the site, all the csv files will be written in the csv folder and all the jpg files will be written in the img folder.
+To delete these files in their folder type :
+
+    rm csv/*.csv
+    rm img/*.jpg
 
 ## Possible improvements
 
-- To run the script more efficiently, asynchronous programmation can be use by using threads.
+- ~~To run the script more efficiently, asynchronous programmation can be use by using threads~~.
 
 - Because I'm using Python, I can use clasess to code with objects

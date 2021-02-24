@@ -32,7 +32,9 @@ def get_book_informations(url):
             .replace(" available)", "")
         )
         data["product_description"] = (
-            soup.find("article", {"class": "product_page"}).find_all("p")[3].text
+            soup.find("article", {"class": "product_page"})
+            .find_all("p")[3]
+            .text.strip()
         )
         data["category"] = (
             soup.find("ul", {"class": "breadcrumb"}).find_all("a")[2].text
@@ -83,7 +85,7 @@ def write_csv(books_list, csv_name):
                 csv_writer.writerow(book)
 
 
-def download_image(book):
+def download_image(book, where):
     """
     Download image of a book
     Args:
@@ -92,7 +94,7 @@ def download_image(book):
 
     response = requests.get(book["image_url"])
     with open(
-        "".join(e for e in book["title"] if e.isalnum()) + ".jpg", "wb"
+        where + "".join(e for e in book["title"] if e.isalnum()) + ".jpg", "wb"
     ) as book_image:
         book_image.write(response.content)
         book_image.close()
@@ -128,11 +130,12 @@ def get_url_books_for_a_category_page(url):
                 j += 1
 
         else:
-            print(category_urls)
+            category_urls.append(url)
 
         for category_url in category_urls:
             response = requests.get(category_url)
             if response.ok:
+                soup = bs(response.text, "lxml")
                 books_informations = soup.find_all(
                     "li", {"class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"}
                 )
@@ -144,6 +147,7 @@ def get_url_books_for_a_category_page(url):
                             "../../..", "http://books.toscrape.com/catalogue"
                         )
                     )
+
     return books_links
 
 

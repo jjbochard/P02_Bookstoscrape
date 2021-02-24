@@ -9,11 +9,11 @@ choice = input("Scrape [book] [category] [all] page : ").lower()
 if choice == "book":
     book = []
     data = function.get_book_informations(
-        "http://books.toscrape.com/catalogue/category/books/travel_2/index.html"
+        "http://books.toscrape.com/catalogue/alice-in-wonderland-alices-adventures-in-wonderland-1_5/index.html"
     )
     book.append(data)
     function.write_csv(book, "book_information.csv")
-    function.download_image(data)
+    function.download_image(data, "")
 
 if choice == "category":
 
@@ -25,14 +25,12 @@ if choice == "category":
     for book_link in book_links:
         data = function.get_book_informations(book_link)
         function.download_image(data)
-        books.append(data)
+        books.append(data, "")
     function.write_csv(books, "book's_information_category.csv")
 
     print("File book's_information_category.csv has been updated")
 
 if choice == "all":
-
-    start_time = time.time()
 
     def scrap_site(category_link):
         books = []
@@ -40,11 +38,12 @@ if choice == "all":
         book_links = function.get_url_books_for_a_category_page(category_link)
         for book_link in book_links:
             data = function.get_book_informations(book_link)
-            function.download_image(data)
+            function.download_image(data, "img/")
             books.append(data)
-        function.write_csv(books, books_category_name + ".csv")
+        function.write_csv(books, "csv/" + books_category_name + ".csv")
         print("File " + books_category_name + ".csv has been updated")
 
+    start_time = time.time()
     category_links = function.get_all_url_category()
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
