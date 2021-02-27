@@ -89,4 +89,4 @@ To delete these files in their folder type :
 
 - ~~To run the script more efficiently, asynchronous programmation can be use by using threads~~.
 
-- Because I'm using Python, I can use clasess to code with objects
+- Because I'm using Python, I can use clases to code with objects

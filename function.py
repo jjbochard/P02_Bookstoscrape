@@ -53,6 +53,7 @@ def get_book_informations(url):
         data["image_url"] = soup.find("img")["src"].replace(
             "../..", "http://books.toscrape.com"
         )
+
     return data
 
 
@@ -85,16 +86,17 @@ def write_csv(books_list, csv_name):
                 csv_writer.writerow(book)
 
 
-def download_image(book, where):
+def download_image(book, path):
     """
     Download image of a book
     Args:
         book (dict): dictionary wich represent the book that we want to download image
+        path (str): where to download image
     """
 
     response = requests.get(book["image_url"])
     with open(
-        where + "".join(e for e in book["title"] if e.isalnum()) + ".jpg", "wb"
+        path + "".join(e for e in book["title"] if e.isalnum()) + ".jpg", "wb"
     ) as book_image:
         book_image.write(response.content)
         book_image.close()

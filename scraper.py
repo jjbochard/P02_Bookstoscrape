@@ -24,8 +24,8 @@ if choice == "category":
     books = []
     for book_link in book_links:
         data = function.get_book_informations(book_link)
-        function.download_image(data)
-        books.append(data, "")
+        function.download_image(data, "")
+        books.append(data)
     function.write_csv(books, "book's_information_category.csv")
 
     print("File book's_information_category.csv has been updated")
