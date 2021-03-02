@@ -19,25 +19,24 @@ def get_book_informations(url):
 
     response = requests.get(url)
     if response.ok:
-        soup = bs(response.text, "lxml")
-
+        soup = bs(response.content, "lxml")
         data["product_page_url"] = url
-        data["universal_product_code"] = soup.find_all("td")[0].text
-        data["title"] = soup.find("h1").text
-        data["price_including_tax"] = soup.find_all("td")[3].text.replace("Â", "")
-        data["price_excluding_tax"] = soup.find_all("td")[2].text.replace("Â", "")
+        data["universal_product_code"] = soup.find_all("td")[0].text.strip()
+        data["title"] = soup.find("h1").text.strip()
+        data["price_including_tax"] = soup.find_all("td")[3].text.strip()
+        data["price_excluding_tax"] = soup.find_all("td")[2].text.strip()
         data["number_available"] = (
             soup.find_all("td")[5]
             .text.replace("In stock (", "")
             .replace(" available)", "")
-        )
+        ).strip()
         data["product_description"] = (
             soup.find("article", {"class": "product_page"})
             .find_all("p")[3]
             .text.strip()
         )
         data["category"] = (
-            soup.find("ul", {"class": "breadcrumb"}).find_all("a")[2].text
+            soup.find("ul", {"class": "breadcrumb"}).find_all("a")[2].text.strip()
         )
         data["review_rating"] = soup.find(
             "div", {"class": "col-sm-6 product_main"}
@@ -79,7 +78,7 @@ def write_csv(books_list, csv_name):
             "review_rating",
             "image_url",
         ]
-        csv_writer = csv.DictWriter(p, delimiter="|", fieldnames=fnames)
+        csv_writer = csv.DictWriter(p, delimiter=";", fieldnames=fnames)
         csv_writer.writeheader()
         if books_list:
             for book in books_list:
